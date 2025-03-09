@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Thumbnail Creator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #ff0000;
+      margin-bottom: 30px;
+    }
+    
+    .drop-area {
+      border: 3px dashed #ccc;
+      border-radius: 10px;
+      padding: 40px 20px;
+      text-align: center;
+      margin-bottom: 30px;
+      transition: all 0.3s;
+      background-color: #f5f5f5;
+      cursor: pointer;
+    }
+    
+    .drop-area.highlight {
+      border-color: #ff0000;
+      background-color: #fff5f5;
+    }
+    
+    .drop-area p {
+      font-size: 18px;
+      margin: 10px 0;
+    }
+    
+    .file-input {
+      display: none;
+    }
+    
+    .preview-container {
+      display: none;
+      margin-top: 40px;
+    }
+    
+    .thumbnail-preview {
+      position: relative;
+      max-width: 100%;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    .thumbnail-canvas {
+      width: 100%;
+      display: block;
+    }
+    
+    .controls {
+      background-color: #f5f5f5;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+    
+    .control-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    
+    input[type="text"],
+    input[type="color"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+    
+    input[type="range"] {
+      width: 100%;
+    }
+    
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+    
+    button {
+      background-color: #ff0000;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    button:hover {
+      background-color: #cc0000;
+    }
+    
+    button.secondary {
+      background-color: #666;
+    }
+    
+    button.secondary:hover {
+      background-color: #444;
+    }
+    
+    .download-button {
+      display: none;
+      margin-top: 20px;
+    }
+    
+    .effect-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .effect-option {
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .effect-option:hover, .effect-option.active {
+      border-color: #ff0000;
+      background-color: #fff5f5;
+    }
+    
+    .tab-buttons {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #ddd;
+    }
+    
+    .tab-button {
+      padding: 10px 20px;
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+    
+    .tab-button.active {
+      color: #ff0000;
+      box-shadow: 0 2px 0 #ff0000;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>YouTube Thumbnail Creator</h1>
+    
+    <div class="drop-area" id="dropArea">
+      <p>Drag & Drop your image here</p>
+      <p>or</p>
+      <button type="button" id="selectButton">Select File</button>
+      <input type="file" id="fileInput" class="file-input" accept="image/*">
+    </div>
+    
+    <div class="preview-container" id="previewContainer">
+      <h2>Preview</h2>
+      <div class="thumbnail-preview">
+        <canvas id="thumbnailCanvas" class="thumbnail-canvas"></canvas>
+      </div>
+      
+      <div class="controls">
+        <div class="tab-buttons">
+          <button type="button" class="tab-button active" data-tab="text">Text</button>
+          <button type="button" class="tab-button" data-tab="effects">Effects</button>
+          <button type="button" class="tab-button" data-tab="border">Border</button>
+        </div>
+        
+        <div class="tab-content active" id="textTab">
+          <div class="control-group">
+            <label for="titleText">Title Overlay:</label>
+            <input type="text" id="titleText" placeholder="Add catchy title here...">
+          </div>
+          
+          <div class="control-group">
+            <label for="titleColor">Title Color:</label>
+            <input type="color" id="titleColor" value="#ffffff">
+          </div>
+          
+          <div class="control-group">
+            <label for="titleSize">Title Size:</label>
+            <input type="range" id="titleSize" min="20" max="80" value="48">
+            <span id="titleSizeValue">48px</span>
+          </div>
+          
+          <div class="control-group">
+            <label for="subheadingText">Subheading:</label>
+            <input type="text" id="subheadingText" placeholder="Add subheading here...">
+          </div>
+          
+          <div class="control-group">
+            <label for="subheadingColor">Subheading Color:</label>
+            <input type="color" id="subheadingColor" value="#ffffff">
+          </div>
+          
+          <div class="control-group">
+            <label for="subheadingSize">Subheading Size:</label>
+            <input type="range" id="subheadingSize" min="14" max="40" value="24">
+            <span id="subheadingSizeValue">24px</span>
+          </div>
+          
+          <div class="control-group">
+            <label for="titleShadow">Text Shadow:</label>
+            <select id="titleShadow">
+              <option value="none">None</option>
+              <option value="light" selected>Light</option>
+              <option value="heavy">Heavy</option>
+              <option value="outline">Outline</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="tab-content" id="effectsTab">
+          <div class="control-group">
+            <label>Apply Effects:</label>
+            <div class="effect-options">
+              <div class="effect-option" data-effect="none">None</div>
+              <div class="effect-option active" data-effect="brightness">Brighter</div>
+              <div class="effect-option" data-effect="contrast">High Contrast</div>
+              <div class="effect-option" data-effect="saturate">Vibrant</div>
+              <div class="effect-option" data-effect="blur">Subtle Blur</div>
+              <div class="effect-option" data-effect="sepia">Sepia</div>
+            </div>
+          </div>
+          
+          <div class="control-group">
+            <label for="overlayColor">Gradient Overlay:</label>
+            <input type="color" id="overlayColor" value="#ff0000">
+            <input type="range" id="overlayOpacity" min="0" max="100" value="20">
+            <span id="overlayOpacityValue">20%</span>
+          </div>
+        </div>
+        
+        <div class="tab-content" id="borderTab">
+          <div class="control-group">
+            <label for="borderEnabled">Enable Border:</label>
+            <input type="checkbox" id="borderEnabled">
+          </div>
+          
+          <div class="control-group">
+            <label for="borderColor">Border Color:</label>
+            <input type="color" id="borderColor" value="#ff0000">
+          </div>
+          
+          <div class="control-group">
+            <label for="borderWidth">Border Width:</label>
+            <input type="range" id="borderWidth" min="2" max="30" value="10">
+            <span id="borderWidthValue">10px</span>
+          </div>
+          
+          <div class="control-group">
+            <label for="borderStyle">Border Style:</label>
+            <select id="borderStyle">
+              <option value="solid">Solid</option>
+              <option value="dashed">Dashed</option>
+              <option value="double">Double</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="button-group">
+        <button type="button" id="resetButton" class="secondary">Reset</button>
+        <button type="button" id="downloadButton">Download Thumbnail</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const dropArea = document.getElementById('dropArea');
+      const fileInput = document.getElementById('fileInput');
+      const selectButton = document.getElementById('selectButton');
+      const previewContainer = document.getElementById('previewContainer');
+      const thumbnailCanvas = document.getElementById('thumbnailCanvas');
+      const ctx = thumbnailCanvas.getContext('2d');
+      const downloadButton = document.getElementById('downloadButton');
+      const resetButton = document.getElementById('resetButton');
+      
+      // Input elements
+      const titleText = document.getElementById('titleText');
+      const titleColor = document.getElementById('titleColor');
+      const titleSize = document.getElementById('titleSize');
+      const titleSizeValue = document.getElementById('titleSizeValue');
+      const subheadingText = document.getElementById('subheadingText');
+      const subheadingColor = document.getElementById('subheadingColor');
+      const subheadingSize = document.getElementById('subheadingSize');
+      const subheadingSizeValue = document.getElementById('subheadingSizeValue');
+      const titleShadow = document.getElementById('titleShadow');
+      const overlayColor = document.getElementById('overlayColor');
+      const overlayOpacity = document.getElementById('overlayOpacity');
+      const overlayOpacityValue = document.getElementById('overlayOpacityValue');
+      const effectOptions = document.querySelectorAll('.effect-option');
+      const borderEnabled = document.getElementById('borderEnabled');
+      const borderColor = document.getElementById('borderColor');
+      const borderWidth = document.getElementById('borderWidth');
+      const borderWidthValue = document.getElementById('borderWidthValue');
+      const borderStyle = document.getElementById('borderStyle');
+      
+      // Tab navigation
+      const tabButtons = document.querySelectorAll('.tab-button');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      let originalImage = null;
+      const YOUTUBE_RATIO = 16/9;
+      const MAX_WIDTH = 1280;
+      
+      // Event listeners for drag and drop
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+      });
+      
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, highlight, false);
+      });
+      
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, unhighlight, false);
+      });
+      
+      function highlight() {
+        dropArea.classList.add('highlight');
+      }
+      
+      function unhighlight() {
+        dropArea.classList.remove('highlight');
+      }
+      
+      // Tab navigation 
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Remove active class from all buttons and contents
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+          
+          // Add active class to clicked button
+          button.classList.add('active');
+          
+          // Show corresponding content
+          const tabName = button.dataset.tab;
+          document.getElementById(`${tabName}Tab`).classList.add('active');
+        });
+      });
+      
+      // Handle file drop
+      dropArea.addEventListener('drop', handleDrop, false);
+      
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        
+        if (files.length) {
+          handleFiles(files);
+        }
+      }
+      
+      // Handle file selection
+      selectButton.addEventListener('click', () => {
+        fileInput.click();
+      });
+      
+      fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+      });
+      
+      function handleFiles(files) {
+        if (files[0].type.match('image.*')) {
+          const reader = new FileReader();
+          
+          reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+              originalImage = img;
+              setupCanvas();
+              renderThumbnail();
+              previewContainer.style.display = 'block';
+            };
+            img.src = e.target.result;
+          };
+          
+          reader.readAsDataURL(files[0]);
+        } else {
+          alert('Please select an image file');
+        }
+      }
+      
+      // Setup canvas with correct dimensions
+      function setupCanvas() {
+        const width = Math.min(MAX_WIDTH, window.innerWidth - 100);
+        const height = width / YOUTUBE_RATIO;
+        
+        thumbnailCanvas.width = width;
+        thumbnailCanvas.height = height;
+      }
+      
+      // Render thumbnail with current settings
+      function renderThumbnail() {
+        if (!originalImage) return;
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, thumbnailCanvas.width, thumbnailCanvas.height);
+        
+        // Calculate dimensions to maintain aspect ratio
+        const canvasRatio = thumbnailCanvas.width / thumbnailCanvas.height;
+        const imageRatio = originalImage.width / originalImage.height;
+        
+        let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
+        
+        if (imageRatio > canvasRatio) {
+          // Image is wider than canvas ratio
+          drawHeight = thumbnailCanvas.height;
+          drawWidth = originalImage.width * (drawHeight / originalImage.height);
+          offsetX = (thumbnailCanvas.width - drawWidth) / 2;
+        } else {
+          // Image is taller than canvas ratio
+          drawWidth = thumbnailCanvas.width;
+          drawHeight = originalImage.height * (drawWidth / originalImage.width);
+          offsetY = (thumbnailCanvas.height - drawHeight) / 2;
+        }
+        
+        // Draw image
+        ctx.drawImage(originalImage, offsetX, offsetY, drawWidth, drawHeight);
+        
+        // Apply selected effect
+        applySelectedEffect();
+        
+        // Add gradient overlay
+        const opacity = parseInt(overlayOpacity.value) / 100;
+        if (opacity > 0) {
+          const gradient = ctx.createLinearGradient(0, 0, 0, thumbnailCanvas.height);
+          gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+          const color = hexToRgb(overlayColor.value);
+          gradient.addColorStop(1, `rgba(${color.r}, ${color.g}, ${color.b}, ${opacity})`);
+          
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, thumbnailCanvas.width, thumbnailCanvas.height);
+        }
+        
+        // Add border if enabled
+        if (borderEnabled.checked) {
+          const width = parseInt(borderWidth.value);
+          let dashPattern = [];
+          
+          if (borderStyle.value === 'dashed') {
+            dashPattern = [width * 2, width];
+          } else if (borderStyle.value === 'double') {
+            // For double, we'll draw two borders
+            ctx.strokeStyle = borderColor.value;
+            ctx.lineWidth = width / 3;
+            
+            // Outer border
+            ctx.strokeRect(width / 6, width / 6, 
+                          thumbnailCanvas.width - width / 3, 
+                          thumbnailCanvas.height - width / 3);
+            
+            // Inner border
+            ctx.strokeRect(width, width, 
+                          thumbnailCanvas.width - width * 2, 
+                          thumbnailCanvas.height - width * 2);
+            
+            // Skip the normal border drawing for double
+            dashPattern = null;
+          } else {
+            // Solid border
+            dashPattern = [];
+          }
+          
+          if (dashPattern !== null) {
+            ctx.strokeStyle = borderColor.value;
+            ctx.lineWidth = width;
+            ctx.setLineDash(dashPattern);
+            ctx.strokeRect(width / 2, width / 2, 
+                          thumbnailCanvas.width - width, 
+                          thumbnailCanvas.height - width);
+            ctx.setLineDash([]);
+          }
+        }
+        
+        // Apply text shadow settings based on selection
+        const shadowType = titleShadow.value;
+        if (shadowType === 'light') {
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+          ctx.shadowBlur = 4;
+          ctx.shadowOffsetX = 2;
+          ctx.shadowOffsetY = 2;
+        } else if (shadowType === 'heavy') {
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+          ctx.shadowBlur = 8;
+          ctx.shadowOffsetX = 3;
+          ctx.shadowOffsetY = 3;
+        } else {
+          ctx.shadowBlur = 0;
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+        }
+        
+        // Add title text
+        if (titleText.value) {
+          const fontSize = parseInt(titleSize.value);
+          ctx.font = `bold ${fontSize}px 'Arial', sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          
+          if (shadowType === 'outline') {
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 4;
+            ctx.strokeText(titleText.value, thumbnailCanvas.width / 2, thumbnailCanvas.height - 70);
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+          }
+          
+          ctx.fillStyle = titleColor.value;
+          ctx.fillText(titleText.value, thumbnailCanvas.width / 2, thumbnailCanvas.height - 70);
+        }
+        
+        // Add subheading text
+        if (subheadingText.value) {
+          const fontSize = parseInt(subheadingSize.value);
+          ctx.font = `${fontSize}px 'Arial', sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'bottom';
+          
+          if (shadowType === 'outline') {
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
+            ctx.strokeText(subheadingText.value, thumbnailCanvas.width / 2, thumbnailCanvas.height - 30);
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+          }
+          
+          ctx.fillStyle = subheadingColor.value;
+          ctx.fillText(subheadingText.value, thumbnailCanvas.width / 2, thumbnailCanvas.height - 30);
+        }
+      }
+      
+      // Apply selected visual effect to the canvas
+      function applySelectedEffect() {
+        const selectedEffect = document.querySelector('.effect-option.active').dataset.effect;
+        
+        if (selectedEffect === 'none') return;
+        
+        // Create temporary canvas for effects
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = thumbnailCanvas.width;
+        tempCanvas.height = thumbnailCanvas.height;
+        const tempCtx = tempCanvas.getContext('2d');
+        
+        // Copy current canvas to temp
+        tempCtx.drawImage(thumbnailCanvas, 0, 0);
+        
+        // Apply effects
+        if (selectedEffect === 'brightness') {
+          ctx.filter = 'brightness(1.2)';
+        } else if (selectedEffect === 'contrast') {
+          ctx.filter = 'contrast(1.3)';
+        } else if (selectedEffect === 'saturate') {
+          ctx.filter = 'saturate(1.5)';
+        } else if (selectedEffect === 'blur') {
+          ctx.filter = 'blur(1px)';
+        } else if (selectedEffect === 'sepia') {
+          ctx.filter = 'sepia(0.5)';
+        }
+        
+        // Draw back with filter
+        ctx.drawImage(tempCanvas, 0, 0);
+        ctx.filter = 'none';
+      }
+      
+      // Convert hex color to RGB
+      function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16)
+        } : { r: 0, g: 0, b: 0 };
+      }
+      
+      // Update display values
+      titleSize.addEventListener('input', () => {
+        titleSizeValue.textContent = `${titleSize.value}px`;
+        renderThumbnail();
+      });
+      
+      subheadingSize.addEventListener('input', () => {
+        subheadingSizeValue.textContent = `${subheadingSize.value}px`;
+        renderThumbnail();
+      });
+      
+      overlayOpacity.addEventListener('input', () => {
+        overlayOpacityValue.textContent = `${overlayOpacity.value}%`;
+        renderThumbnail();
+      });
+      
+      borderWidth.addEventListener('input', () => {
+        borderWidthValue.textContent = `${borderWidth.value}px`;
+        renderThumbnail();
+      });
+      
+      // Handle effect selection
+      effectOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          effectOptions.forEach(opt => opt.classList.remove('active'));
+          option.classList.add('active');
+          renderThumbnail();
+        });
+      });
+      
+      // Add event listeners for all controls
+      [titleText, titleColor, subheadingText, subheadingColor, titleShadow, 
+       overlayColor, borderEnabled, borderColor, borderStyle].forEach(control => {
+        control.addEventListener('input', renderThumbnail);
+      });
+      
+      // Download button
+      downloadButton.addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.download = 'youtube-thumbnail.jpg';
+        link.href = thumbnailCanvas.toDataURL('image/jpeg', 0.9);
+        link.click();
+      });
+      
+      // Reset button
+      resetButton.addEventListener('click', () => {
+        titleText.value = '';
+        titleColor.value = '#ffffff';
+        titleSize.value = 48;
+        titleSizeValue.textContent = '48px';
+        
+        subheadingText.value = '';
+        subheadingColor.value = '#ffffff';
+        subheadingSize.value = 24;
+        subheadingSizeValue.textContent = '24px';
+        
+        titleShadow.value = 'light';
+        overlayColor.value = '#ff0000';
+        overlayOpacity.value = 20;
+        overlayOpacityValue.textContent = '20%';
+        
+        borderEnabled.checked = false;
+        borderColor.value = '#ff0000';
+        borderWidth.value = 10;
+        borderWidthValue.textContent = '10px';
+        borderStyle.value = 'solid';
+        
+        effectOptions.forEach(opt => opt.classList.remove('active'));
+        document.querySelector('[data-effect="brightness"]').classList.add('active');
+        
+        renderThumbnail();
+      });
+      
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        if (originalImage) {
+          setupCanvas();
+          renderThumbnail();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
