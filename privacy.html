@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - YouTube Thumbnail Creator</title>
+  <style>
+    :root {
+      --bg-color: #f9f9f9;
+      --container-bg: white;
+      --text-color: #333;
+      --heading-color: #ff0000;
+      --control-border: #ddd;
+      --button-primary: #ff0000;
+      --button-primary-hover: #cc0000;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+    }
+    
+    body.dark-mode {
+      --bg-color: #121212;
+      --container-bg: #1e1e1e;
+      --text-color: #e0e0e0;
+      --heading-color: #ff5252;
+      --control-border: #444;
+      --button-primary: #ff5252;
+      --button-primary-hover: #ff7070;
+      --card-shadow: rgba(0, 0, 0, 0.3);
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 20px;
+      color: var(--text-color);
+      transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: var(--container-bg);
+      border-radius: 10px;
+      box-shadow: 0 4px 15px var(--card-shadow);
+      padding: 30px;
+      transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    
+    h1, h2 {
+      color: var(--heading-color);
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .back-button {
+      display: inline-block;
+      background-color: var(--button-primary);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+    
+    .back-button:hover {
+      background-color: var(--button-primary-hover);
+    }
+    
+    .mode-toggle {
+      background: none;
+      border: 1px solid var(--control-border);
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      color: var(--text-color);
+      transition: all 0.3s;
+      margin-bottom: 20px;
+    }
+    
+    .toggle-icon {
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button id="darkModeToggle" class="mode-toggle">
+      <span class="toggle-icon">🌙</span>
+      <span class="toggle-text">Dark Mode</span>
+    </button>
+    
+    <h1>Privacy Policy</h1>
+    
+    <h2>1. Data Collection</h2>
+    <p>The YouTube Thumbnail Creator is designed with privacy in mind. We do not collect, store, or process any personal data or image files. All operations are performed locally in your browser.</p>
+    
+    <h2>2. Image Processing</h2>
+    <p>When you upload an image to create a thumbnail, the image is processed entirely within your browser and remains on your device. No images are uploaded to our servers or shared with third parties.</p>
+    
+    <h2>3. Local Storage</h2>
+    <p>The tool uses local storage on your device only to save your theme preference (light/dark mode). No other data is stored.</p>
+    
+    <h2>4. Third-Party Services</h2>
+    <p>The YouTube Thumbnail Creator includes a "Buy Me a Coffee" link which, if clicked, will direct you to an external website. Please be aware that this external website has its own privacy policy which we do not control.</p>
+    
+    <h2>5. Analytics</h2>
+    <p>We do not use any analytics or tracking tools on this website. No information about your usage of the tool is collected or analyzed.</p>
+    
+    <h2>6. Children's Privacy</h2>
+    <p>The YouTube Thumbnail Creator is suitable for all ages and does not collect any information from children or adults.</p>
+    
+    <h2>7. Changes to Privacy Policy</h2>
+    <p>We reserve the right to update this privacy policy at any time. Any changes will be effective immediately upon posting.</p>
+    
+    <h2>8. Contact Information</h2>
+    <p>If you have any questions about this Privacy Policy, please contact us through the "Buy Me a Coffee" link on the main page.</p>
+    
+    <a href="index.html" class="back-button">Back to Thumbnail Creator</a>
+  </div>
+
+  <script>
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const toggleIcon = darkModeToggle.querySelector('.toggle-icon');
+    const toggleText = darkModeToggle.querySelector('.toggle-text');
+    
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.body.classList.add('dark-mode');
+      toggleIcon.textContent = '☀️';
+      toggleText.textContent = 'Light Mode';
+    }
+    
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      
+      // Update toggle button
+      if (isDarkMode) {
+        toggleIcon.textContent = '☀️';
+        toggleText.textContent = 'Light Mode';
+      } else {
+        toggleIcon.textContent = '🌙';
+        toggleText.textContent = 'Dark Mode';
+      }
+      
+      // Save preference
+      localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    });
+  </script>
+</body>
+</html>

@@ -5,43 +5,91 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YouTube Thumbnail Creator</title>
   <style>
+    :root {
+      /* Light mode variables */
+      --bg-color: #f9f9f9;
+      --container-bg: white;
+      --text-color: #333;
+      --heading-color: #ff0000;
+      --drop-area-bg: #f5f5f5;
+      --drop-area-border: #ccc;
+      --control-bg: #f5f5f5;
+      --control-border: #ddd;
+      --button-primary: #ff0000;
+      --button-primary-hover: #cc0000;
+      --button-secondary: #666;
+      --button-secondary-hover: #444;
+      --effect-active-bg: #fff5f5;
+      --effect-active-border: #ff0000;
+      --tab-border: #ddd;
+      --tab-active: #ff0000;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+    }
+    
+    body.dark-mode {
+      /* Dark mode variables */
+      --bg-color: #121212;
+      --container-bg: #1e1e1e;
+      --text-color: #e0e0e0;
+      --heading-color: #ff5252;
+      --drop-area-bg: #2a2a2a;
+      --drop-area-border: #444;
+      --control-bg: #2a2a2a;
+      --control-border: #444;
+      --button-primary: #ff5252;
+      --button-primary-hover: #ff7070;
+      --button-secondary: #454545;
+      --button-secondary-hover: #555555;
+      --effect-active-bg: #4d292a;
+      --effect-active-border: #ff5252;
+      --tab-border: #444;
+      --tab-active: #ff5252;
+      --card-shadow: rgba(0, 0, 0, 0.3);
+    }
+    
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f9f9f9;
+      background-color: var(--bg-color);
       margin: 0;
       padding: 20px;
-      color: #333;
+      color: var(--text-color);
+      transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
     }
     
     .container {
       max-width: 1000px;
       margin: 0 auto;
-      background-color: white;
+      background-color: var(--container-bg);
       border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 15px var(--card-shadow);
       padding: 30px;
+      transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    
+    h1, h2 {
+      color: var(--heading-color);
+      transition: color 0.3s ease-in-out;
     }
     
     h1 {
       text-align: center;
-      color: #ff0000;
       margin-bottom: 30px;
     }
     
     .drop-area {
-      border: 3px dashed #ccc;
+      border: 3px dashed var(--drop-area-border);
       border-radius: 10px;
       padding: 40px 20px;
       text-align: center;
       margin-bottom: 30px;
       transition: all 0.3s;
-      background-color: #f5f5f5;
+      background-color: var(--drop-area-bg);
       cursor: pointer;
     }
     
     .drop-area.highlight {
-      border-color: #ff0000;
-      background-color: #fff5f5;
+      border-color: var(--heading-color);
+      background-color: var(--effect-active-bg);
     }
     
     .drop-area p {
@@ -62,7 +110,7 @@
       position: relative;
       max-width: 100%;
       margin-bottom: 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 10px var(--card-shadow);
       border-radius: 10px;
       overflow: hidden;
     }
@@ -73,10 +121,11 @@
     }
     
     .controls {
-      background-color: #f5f5f5;
+      background-color: var(--control-bg);
       padding: 20px;
       border-radius: 10px;
       margin-bottom: 30px;
+      transition: background-color 0.3s ease-in-out;
     }
     
     .control-group {
@@ -94,10 +143,13 @@
     select {
       width: 100%;
       padding: 10px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--control-border);
       border-radius: 5px;
       font-size: 16px;
       margin-bottom: 5px;
+      background-color: var(--container-bg);
+      color: var(--text-color);
+      transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border 0.3s ease-in-out;
     }
     
     input[type="range"] {
@@ -111,7 +163,7 @@
     }
     
     button {
-      background-color: #ff0000;
+      background-color: var(--button-primary);
       color: white;
       border: none;
       padding: 12px 25px;
@@ -122,15 +174,15 @@
     }
     
     button:hover {
-      background-color: #cc0000;
+      background-color: var(--button-primary-hover);
     }
     
     button.secondary {
-      background-color: #666;
+      background-color: var(--button-secondary);
     }
     
     button.secondary:hover {
-      background-color: #444;
+      background-color: var(--button-secondary-hover);
     }
     
     .download-button {
@@ -146,7 +198,7 @@
     }
     
     .effect-option {
-      border: 2px solid #ddd;
+      border: 2px solid var(--control-border);
       border-radius: 5px;
       padding: 8px 15px;
       cursor: pointer;
@@ -154,21 +206,21 @@
     }
     
     .effect-option:hover, .effect-option.active {
-      border-color: #ff0000;
-      background-color: #fff5f5;
+      border-color: var(--effect-active-border);
+      background-color: var(--effect-active-bg);
     }
     
     .tab-buttons {
       display: flex;
       margin-bottom: 20px;
-      border-bottom: 2px solid #ddd;
+      border-bottom: 2px solid var(--tab-border);
     }
     
     .tab-button {
       padding: 10px 20px;
       background: none;
       border: none;
-      color: #666;
+      color: var(--text-color);
       cursor: pointer;
       font-size: 16px;
       font-weight: bold;
@@ -176,8 +228,8 @@
     }
     
     .tab-button.active {
-      color: #ff0000;
-      box-shadow: 0 2px 0 #ff0000;
+      color: var(--tab-active);
+      box-shadow: 0 2px 0 var(--tab-active);
     }
     
     .tab-content {
@@ -187,11 +239,79 @@
     .tab-content.active {
       display: block;
     }
+    
+    .header-controls {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+    }
+    
+    .mode-toggle {
+      background: none;
+      border: 1px solid var(--control-border);
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      color: var(--text-color);
+      transition: all 0.3s;
+    }
+    
+    .mode-toggle:hover {
+      background-color: var(--drop-area-bg);
+    }
+    
+    .toggle-icon {
+      margin-right: 8px;
+    }
+    
+    .how-to-use {
+      background-color: var(--drop-area-bg);
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      transition: background-color 0.3s ease-in-out;
+    }
+    
+    .how-to-use ol {
+      padding-left: 25px;
+    }
+    
+    .how-to-use ul {
+      padding-left: 20px;
+    }
+    
+    .how-to-use li {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
+		<div class="header-controls">
+	  <button id="darkModeToggle" class="mode-toggle">
+	    <span class="toggle-icon">🌙</span>
+	    <span class="toggle-text">Dark Mode</span>
+	  </button>
+	</div>
     <h1>YouTube Thumbnail Creator</h1>
+		<div class="how-to-use" id="howToUse">
+		  <h2>How to Use</h2>
+		  <ol>
+		    <li>Drag and drop an image or click "Select File" to upload</li>
+		    <li>Use the tabs to customize your thumbnail:
+		      <ul>
+		        <li><strong>Text:</strong> Add title, subheading, and adjust text styling</li>
+		        <li><strong>Effects:</strong> Apply visual effects and gradient overlay</li>
+		        <li><strong>Border:</strong> Add and customize a border around your thumbnail</li>
+		      </ul>
+		    </li>
+		    <li>Preview your changes in real-time</li>
+		    <li>Click "Download Thumbnail" when you're satisfied with the result</li>
+		  </ol>
+		  <button id="hideHowTo" class="secondary">Hide Instructions</button>
+		</div>
     
     <div class="drop-area" id="dropArea">
       <p>Drag & Drop your image here</p>
@@ -311,6 +431,32 @@
         <button type="button" id="downloadButton">Download Thumbnail</button>
       </div>
     </div>
+    <!-- Add this footer section right before the closing </div> of the container -->
+    <footer style="margin-top: 40px; text-align: center; padding: 20px; border-top: 1px solid var(--control-border); background-color: var(--footer-bg); border-radius: 0 0 10px 10px; color: var(--footer-text);">
+      <p>If you found this tool helpful, consider supporting the creator</p>
+      <a href="https://www.buymeacoffee.com/jicoing" target="_blank" style="display: inline-block; background-color: #FFDD00; color: #000000; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: all 0.3s;">
+        <svg width="20" height="20" style="vertical-align: middle; margin-right: 5px;" viewBox="0 0 884 1279" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M791.109 297.518L790.231 297.002L788.201 296.383C789.018 297.072 790.04 297.472 791.109 297.518Z" fill="#0D0C22"></path>
+          <path d="M803.896 388.891L802.916 389.166L803.896 388.891Z" fill="#0D0C22"></path>
+          <path d="M791.484 297.377C791.359 297.361 791.237 297.332 791.118 297.29C791.111 297.371 791.111 297.453 791.118 297.534C791.252 297.516 791.379 297.462 791.484 297.377Z" fill="#0D0C22"></path>
+          <path d="M791.113 297.529H791.244V297.447L791.113 297.529Z" fill="#0D0C22"></path>
+          <path d="M803.111 388.726L804.591 387.883L805.142 387.573L805.641 387.04C804.702 387.444 803.846 388.016 803.111 388.726Z" fill="#0D0C22"></path>
+          <path d="M793.669 299.515L792.223 298.138L791.243 297.605C791.77 298.535 792.641 299.221 793.669 299.515Z" fill="#0D0C22"></path>
+          <path d="M430.019 1186.18C428.864 1186.68 427.852 1187.46 427.076 1188.45L427.988 1187.87C428.608 1187.3 429.485 1186.63 430.019 1186.18Z" fill="#0D0C22"></path>
+          <path d="M641.187 1144.63C641.187 1143.33 640.551 1143.57 640.705 1148.21C640.705 1147.84 640.86 1147.46 640.929 1147.1C641.015 1146.27 641.084 1145.46 641.187 1144.63Z" fill="#0D0C22"></path>
+          <path d="M619.284 1186.18C618.129 1186.68 617.118 1187.46 616.342 1188.45L617.254 1187.87C617.873 1187.3 618.751 1186.63 619.284 1186.18Z" fill="#0D0C22"></path>
+          <path d="M281.304 1196.06C280.427 1195.3 279.354 1194.8 278.207 1194.61C279.136 1195.06 280.065 1195.51 280.684 1195.85L281.304 1196.06Z" fill="#0D0C22"></path>
+          <path d="M247.841 1164.01C247.704 1162.66 247.288 1161.35 246.619 1160.16C247.093 1161.39 247.489 1162.66 247.806 1163.94L247.841 1164.01Z" fill="#0D0C22"></path>
+          <path d="M472.623 590.836C426.682 589.387 371.521 620.476 302.119 630.228C250.993 637.443 170.797 633.368 170.797 633.368C170.797 633.368 182.039 599.883 221.742 576.986C235.714 568.194 254.908 560.525 280.352 554.643C311.975 547.205 354.957 543.454 413.868 532.351C477.428 520.584 544.814 484.88 544.814 484.88C544.814 484.88 518.236 592.285 472.623 590.836Z" fill="#FFDD00"></path>
+          <path d="M544.814 484.88C544.814 484.88 518.236 592.285 472.623 590.836C426.682 589.387 371.521 620.476 302.119 630.228C250.993 637.443 170.797 633.368 170.797 633.368C170.797 633.368 182.039 599.883 221.742 576.986C235.714 568.194 254.908 560.525 280.352 554.643C311.975 547.205 354.957 543.454 413.868 532.351C477.428 520.584 544.814 484.88 544.814 484.88Z" fill="#FFDD00"></path>
+          <path d="M206.952 799.192C206.952 799.192 191.633 745.809 190.355 718.563C189.364 698.124 190.45 685.643 196.853 661.71C196.853 661.71 222.853 670.601 235.926 684.406C235.926 684.406 225.519 724.476 233.721 750.585C240.324 771.573 259.265 804.258 259.265 804.258L206.952 799.192Z" fill="#FFDD00"></path>
+          <path d="M206.952 799.192C206.952 799.192 191.633 745.809 190.355 718.563C189.364 698.124 190.45 685.643 196.853 661.71C196.853 661.71 222.853 670.601 235.926 684.406C235.926 684.406 225.519 724.476 233.721 750.585C240.324 771.573 259.265 804.258 259.265 804.258L206.952 799.192Z" fill="#FFDD00"></path>
+          <path d="M235.754 700.163L233.818 724.857L220.239 778.647C220.239 778.647 218.413 754.195 220.65 726.553C222.376 705.367 235.754 700.163 235.754 700.163Z" fill="#0D0C22"></path>
+        </svg>
+        Buy Me a Coffee
+      </a>
+      <p style="margin-top: 15px; font-size: 14px;">© 2025 YouTube Thumbnail Creator - <a href="#" style="color: var(--heading-color); text-decoration: none;">Terms</a> | <a href="#" style="color: var(--heading-color); text-decoration: none;">Privacy</a></p>
+    </footer>
   </div>
 
   <script>
@@ -710,6 +856,48 @@
           renderThumbnail();
         }
       });
+			// Dark mode toggle
+			const darkModeToggle = document.getElementById('darkModeToggle');
+			const toggleIcon = darkModeToggle.querySelector('.toggle-icon');
+			const toggleText = darkModeToggle.querySelector('.toggle-text');
+			
+			// Check for saved theme preference or prefer-color-scheme
+			const savedTheme = localStorage.getItem('theme');
+			if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+			  document.body.classList.add('dark-mode');
+			  toggleIcon.textContent = '☀️';
+			  toggleText.textContent = 'Light Mode';
+			}
+			
+			darkModeToggle.addEventListener('click', () => {
+			  document.body.classList.toggle('dark-mode');
+			  const isDarkMode = document.body.classList.contains('dark-mode');
+			  
+			  // Update toggle button
+			  if (isDarkMode) {
+			    toggleIcon.textContent = '☀️';
+			    toggleText.textContent = 'Light Mode';
+			  } else {
+			    toggleIcon.textContent = '🌙';
+			    toggleText.textContent = 'Dark Mode';
+			  }
+			  
+			  // Save preference
+			  localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+			  
+			  // Re-render thumbnail if it exists
+			  if (originalImage) {
+			    renderThumbnail();
+			  }
+			});
+			
+			// How to use section toggle
+			const howToUse = document.getElementById('howToUse');
+			const hideHowTo = document.getElementById('hideHowTo');
+			
+			hideHowTo.addEventListener('click', () => {
+			  howToUse.style.display = 'none';
+			});
     });
   </script>
 </body>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service - YouTube Thumbnail Creator</title>
+  <style>
+    :root {
+      --bg-color: #f9f9f9;
+      --container-bg: white;
+      --text-color: #333;
+      --heading-color: #ff0000;
+      --control-border: #ddd;
+      --button-primary: #ff0000;
+      --button-primary-hover: #cc0000;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+    }
+    
+    body.dark-mode {
+      --bg-color: #121212;
+      --container-bg: #1e1e1e;
+      --text-color: #e0e0e0;
+      --heading-color: #ff5252;
+      --control-border: #444;
+      --button-primary: #ff5252;
+      --button-primary-hover: #ff7070;
+      --card-shadow: rgba(0, 0, 0, 0.3);
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 20px;
+      color: var(--text-color);
+      transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: var(--container-bg);
+      border-radius: 10px;
+      box-shadow: 0 4px 15px var(--card-shadow);
+      padding: 30px;
+      transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    
+    h1, h2 {
+      color: var(--heading-color);
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .back-button {
+      display: inline-block;
+      background-color: var(--button-primary);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+    
+    .back-button:hover {
+      background-color: var(--button-primary-hover);
+    }
+    
+    .mode-toggle {
+      background: none;
+      border: 1px solid var(--control-border);
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      color: var(--text-color);
+      transition: all 0.3s;
+      margin-bottom: 20px;
+    }
+    
+    .toggle-icon {
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button id="darkModeToggle" class="mode-toggle">
+      <span class="toggle-icon">🌙</span>
+      <span class="toggle-text">Dark Mode</span>
+    </button>
+    
+    <h1>Terms of Service</h1>
+    
+    <h2>1. Acceptance of Terms</h2>
+    <p>By accessing and using the YouTube Thumbnail Creator tool, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use this tool.</p>
+    
+    <h2>2. Description of Service</h2>
+    <p>YouTube Thumbnail Creator is a web-based tool that allows users to create and customize thumbnails for YouTube videos. The tool processes images and applies user-selected modifications entirely within the user's browser.</p>
+    
+    <h2>3. User Content</h2>
+    <p>All images processed by the YouTube Thumbnail Creator remain on your device and are not uploaded to any server. We do not store, collect, or have access to any content you create or modify using this tool.</p>
+    
+    <h2>4. Intellectual Property</h2>
+    <p>Users retain all ownership rights to the content they create using the YouTube Thumbnail Creator. The tool itself, including its design, code, and functionality, is protected by copyright and other intellectual property laws.</p>
+    
+    <h2>5. Prohibited Uses</h2>
+    <p>You agree not to use the YouTube Thumbnail Creator to create content that is illegal, harmful, threatening, abusive, harassing, defamatory, or otherwise objectionable. You are solely responsible for the content you create using this tool.</p>
+    
+    <h2>6. Limitation of Liability</h2>
+    <p>The YouTube Thumbnail Creator is provided "as is" without any warranties, expressed or implied. We are not liable for any damages arising from the use or inability to use this tool.</p>
+    
+    <h2>7. Changes to Terms</h2>
+    <p>We reserve the right to modify these Terms of Service at any time. Continued use of the YouTube Thumbnail Creator after any changes constitutes acceptance of the new terms.</p>
+    
+    <h2>8. Contact Information</h2>
+    <p>If you have any questions about these Terms of Service, please contact us through the "Buy Me a Coffee" link on the main page.</p>
+    
+    <a href="index.html" class="back-button">Back to Thumbnail Creator</a>
+  </div>
+
+  <script>
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const toggleIcon = darkModeToggle.querySelector('.toggle-icon');
+    const toggleText = darkModeToggle.querySelector('.toggle-text');
+    
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.body.classList.add('dark-mode');
+      toggleIcon.textContent = '☀️';
+      toggleText.textContent = 'Light Mode';
+    }
+    
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      
+      // Update toggle button
+      if (isDarkMode) {
+        toggleIcon.textContent = '☀️';
+        toggleText.textContent = 'Light Mode';
+      } else {
+        toggleIcon.textContent = '🌙';
+        toggleText.textContent = 'Dark Mode';
+      }
+      
+      // Save preference
+      localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    });
+  </script>
+</body>
+</html>
